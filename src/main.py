@@ -7,7 +7,7 @@ sys.path.append('/home/minkescanor/Desktop/WORKPLACE/Personal/Compress-Image-usi
 from utils.k_means import K_means_model
 from utils.extract_colors import read_img
 data_path = '/home/minkescanor/Desktop/WORKPLACE/Personal/Compress-Image-using-K-means/dataset'
-epsilon = 0.000001
+epsilon = 0.000000001
 
 if __name__ == '__main__':
     k_clusters = []
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         best_model = any
         index = []
         for i in range(16, 255*255*255 + 1):
-            model = K_means_model(input_data=img_data, k=i)
+            model = K_means_model(input_data=img_data, k=i, iters=20)
             temp = model.run()
             idx = temp[0]
 
@@ -49,13 +49,15 @@ if __name__ == '__main__':
         original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
 
         # Display original image
+        original_size = original_shape[0]*original_shape[1]*24 / 8
         axes[0].imshow(original_img)
-        axes[0].set_title('Original Image')
+        axes[0].set_title('Original Image-memory %d bytes'%original_size)
         axes[0].axis('off')
 
         # Display compressed image
+        compressed_size = model.K*24 + original_shape[0] * original_shape[1]
         axes[1].imshow(X_recovered)
-        axes[1].set_title('Compressed with %d colours'%best_model.K)
+        axes[1].set_title('Compressed with {} colours-memory: {} bytes'.format(best_model.K, compressed_size))
         axes[0].axis('off')
 
         plt.show()
